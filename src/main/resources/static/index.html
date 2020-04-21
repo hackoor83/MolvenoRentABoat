@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Molveno Rent A Boat</title>
+
+    <!-- Import JQuery -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+    <!-- Import JQueryUI -->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+
+    <!-- Import Popper  -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+
+    <!-- Import Bootstrap -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+    <!-- Import DataTables -->
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <link href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" rel="stylesheet">
+
+    <!-- Disable favicon error -->
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+
+    <!-- Local imports -->
+    <script src="/js/main.js"></script>
+    <script src="/js/infoBar.js"></script>
+    <link href="/css/customStyle.css" rel="stylesheet">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <div class="container-fluid jumbotron" id="mainHeaderContainer">
+        <h1 class="display-5 text-center">Molveno Lake Rent A Boat</h1>
+        <p class="lead text-center">Welcome to Molveno Lake Rent A Boat management system.</p>
+        <hr class="my-4">
+        <div class="container-fluid">
+            <div class="lead">
+                <a class="btn btn-primary" href="#" role="button" data-toggle="modal" data-target="#manageTripsModal">Trips</a>
+                <a class="btn btn-primary" data-toggle="modal" data-target="#manageReservationsModal" role="button">Reservations</a>
+                <a class="btn btn-primary" role="button" data-toggle="modal" data-target="#manageBoatsModal">Boats & Pricing</a>
+                <a class="btn btn-outline-info" data-toggle="collapse" data-target="#currentStatsAlert" id="toggleInfoBarBtn">Toggle info bar:</a>
+            </div>
+
+            <!-- Info bar -->
+            <div class="alert alert-secondary collapse border border-light" id="currentStatsAlert">
+                <small>
+                    <ul class="list-group list-group-horizontal">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <abbr title="Number of completed trips">Completed</abbr>
+                            <span class="badge badge-primary badge-pill" id="statsCompletedTrips"></span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <abbr title="Number of ongoing trips">Ongoing</abbr>
+                            <span class="badge badge-primary badge-pill" id="statsOngoingTrips"></span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <abbr title="Completed trips total durations (minutes)">Durations</abbr>
+                            <span class="badge badge-primary badge-pill" id="statsTotalDurations"></span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <abbr title="Average duration per trip">Average</abbr>
+                            <span class="badge badge-primary badge-pill" id="statsAvgDurations"></span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <abbr title="Total income from all completed trips">Income</abbr>
+                            <span class="badge badge-primary badge-pill" id="statsTotalIncome"></span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <abbr title="Number of available boats">Available</abbr>
+                            <span class="badge badge-primary badge-pill" id="statsTotalAvailable"></span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <abbr title="Number of boats currently in maintenance">Maintenance</abbr>
+                            <span class="badge badge-primary badge-pill" id="statsTotalMaintenance"></span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <abbr title="Number of boats currently in charging">Charging</abbr>
+                            <span class="badge badge-primary badge-pill" id="statsTotalCharging"></span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <abbr title="Number of boats currently on trip">Rented</abbr>
+                            <span class="badge badge-primary badge-pill" id="statsTotalRented"></span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <!-- <button class="badge badge-primary" id="boatSpecificStatsBtn" data-toggle="modal" data-target="#boatSpecificStatsModal">Boat specific stats</button> -->
+                            <small>
+                                <button class="btn btn-outline-info btn-sm" id="boatSpecificStatsBtn" data-toggle="modal" data-target="#boatSpecificStatsModal">Boat specific stats</button>
+                            </small>
+                </li>
+                </ul>
+                </small>
+            </div>
+
+
+
+
+        </div>
+    </div>
+
+
+
+    <!-- <pre>   
+ ██████  ██████  ███    ██ ████████  █████  ██ ███    ██ ███████ ██████  ███████ 
+██      ██    ██ ████   ██    ██    ██   ██ ██ ████   ██ ██      ██   ██ ██      
+██      ██    ██ ██ ██  ██    ██    ███████ ██ ██ ██  ██ █████   ██████  ███████ 
+██      ██    ██ ██  ██ ██    ██    ██   ██ ██ ██  ██ ██ ██      ██   ██      ██ 
+ ██████  ██████  ██   ████    ██    ██   ██ ██ ██   ████ ███████ ██   ██ ███████ 
+    </pre> -->
+
+
+
+    <!-- Boats Management containers -->
+    <!-- <pre>
+  ____              _     __  __                                                   _   
+ |  _ \            | |   |  \/  |                                                 | |  
+ | |_) | ___   __ _| |_  | \  / | __ _ _ __   __ _  __ _  ___ _ __ ___   ___ _ __ | |_ 
+ |  _ < / _ \ / _` | __| | |\/| |/ _` | '_ \ / _` |/ _` |/ _ \ '_ ` _ \ / _ \ '_ \| __|
+ | |_) | (_) | (_| | |_  | |  | | (_| | | | | (_| | (_| |  __/ | | | | |  __/ | | | |_ 
+ |____/ \___/ \__,_|\__| |_|  |_|\__,_|_| |_|\__,_|\__, |\___|_| |_| |_|\___|_| |_|\__|
+                                                    __/ |                              
+                                                   |___/                               
+    </pre> -->
+
+    <!-- Boats Manager container -->
+    <div class="container jumbotron collapse toHide" id="boatManagerContainer">
+        <h3>List of Molveno boats</h3>
+        <p class="lead">View and manage boats in the system:</p>
+        <a class="btn btn-success" id="addNewBoatFromContainer" data-toggle="modal" data-target="#addBoatModal">Add new boat</a>
+        <hr class="my-4">
+
+        <!-- Available boats table (i.e. list of boats owned by Molveno) -->
+        <div class="container toggleTable">
+            <table class="display" id="availableBoats">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Boat Number</th>
+                        <th>Number of seats</th>
+                        <th>Type</th>
+                        <th>Charing Minutes</th>
+                        <th>Base Price</th>
+                        <th>Custom Price</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <hr class="my-2">
+        <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#boatManagerContainer">Close</button>
+    </div>
+
+
+
+    <!-- Default Pricing management containers  -->
+    <!-- <pre>      
+  ____       _      _               __  __                                                   _   
+ |  _ \ _ __(_) ___(_)_ __   __ _  |  \/  | __ _ _ __   __ _  __ _  ___ _ __ ___   ___ _ __ | |_ 
+ | |_) | '__| |/ __| | '_ \ / _` | | |\/| |/ _` | '_ \ / _` |/ _` |/ _ | '_ ` _ \ / _ | '_ \| __|
+ |  __/| |  | | (__| | | | | (_| | | |  | | (_| | | | | (_| | (_| |  __| | | | | |  __| | | | |_ 
+ |_|   |_|  |_|\___|_|_| |_|\__, | |_|  |_|\__,_|_| |_|\__,_|\__, |\___|_| |_| |_|\___|_| |_|\__|
+                            |___/                            |___/                               
+    </pre> -->
+
+    <!-- Pricing Schemes list container -->
+    <div class="container jumbotron collapse toHide" id="pricingSchemesContainer">
+        <h3>Pricing Schemes</h3>
+        <p class="lead">Manage the pricing schemes in the system:</p>
+        <!-- <a class="btn btn-success">Add new boat</a> -->
+        <hr class="my-4">
+        <div class="container">
+            <table id="pricingSchemeMainTable" class="display">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Boat Type</th>
+                        <th>Base Price/Hour</th>
+                        <th>Custom Price/Hour</th>
+                        <th>Custom Price From</th>
+                        <th>Custom Price To</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <hr class="my-2">
+        <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#pricingSchemesContainer">Close</button>
+    </div>
+
+
+
+
+    <!-- Trips management containers -->
+    <!-- <pre>
+  _______   _             __  __                                                   _   
+ |__   __| (_)           |  \/  |                                                 | |  
+    | |_ __ _ _ __  ___  | \  / | __ _ _ __   __ _  __ _  ___ _ __ ___   ___ _ __ | |_ 
+    | | '__| | '_ \/ __| | |\/| |/ _` | '_ \ / _` |/ _` |/ _ | '_ ` _ \ / _ | '_ \| __|
+    | | |  | | |_) \__ \ | |  | | (_| | | | | (_| | (_| |  __| | | | | |  __| | | | |_ 
+    |_|_|  |_| .__/|___/ |_|  |_|\__,_|_| |_|\__,_|\__, |\___|_| |_| |_|\___|_| |_|\__|
+             | |                                    __/ |                              
+             |_|                                   |___/                               
+    </pre> -->
+
+    <!-- Start trip: list of available Rowing and Electric boats container -->
+    <div class="container jumbotron collapse multi-collapse toHide" id="startTripListOfAvailableBoatsContainer">
+        <h3>Available boats</h3>
+        <p class="lead">Based on guest's trip requirements, these are the available boats:</p>
+        <hr class="my-4">
+        <div class="container">
+            <table id="startTripAvailableBoatsTable" class="display">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Boat Number</th>
+                        <th>Number of Seats</th>
+                        <th>Boat Type</th>
+                        <th>Base price</th>
+                        <th>Custom price</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="startTripAvailableBoatsTableBody">
+                </tbody>
+            </table>
+        </div>
+        <hr class="my-2">
+        <button type="button" class="btn btn-primary" id="startTripListOfAvailableBoatsContainerCloseBtn" data-toggle="collapse" data-target="#startTripListOfAvailableBoatsContainer">Close</button>
+    </div>
+
+
+    <!-- List of boats trips container -->
+    <div class="container jumbotron collapse multi-collapse" id="listOfOngoingTripsContainer">
+        <h3>List of boats trips</h3>
+        <p class="lead">View trips history and end ongoing trips:</p>
+        <hr class="my-4">
+        <div class="container">
+            <table id="ongoingTripsTable" class="display">
+                <thead>
+                    <tr>
+                        <th>Trip ID</th>
+                        <th>Boat Number</th>
+                        <th>Date</th>
+                        <th>Started at</th>
+                        <th>Ended at</th>
+                        <th>Duration</th>
+                        <th>Cost</th>
+                        <th>Status</th>
+                        <th>Guest</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <hr class="my-2">
+        <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#listOfOngoingTripsContainer">Close</button>
+    </div>
+
+
+    <!-- Reservation management containers -->
+
+    <!-- <pre>
+  _____                               _   _                   __  __                                                   _   
+ |  __ \                             | | (_)                 |  \/  |                                                 | |  
+ | |__) |___ ___  ___ _ ____   ____ _| |_ _  ___  _ __  ___  | \  / | __ _ _ __   __ _  __ _  ___ _ __ ___   ___ _ __ | |_ 
+ |  _  // _ / __|/ _ | '__\ \ / / _` | __| |/ _ \| '_ \/ __| | |\/| |/ _` | '_ \ / _` |/ _` |/ _ | '_ ` _ \ / _ | '_ \| __|
+ | | \ |  __\__ |  __| |   \ V | (_| | |_| | (_) | | | \__ \ | |  | | (_| | | | | (_| | (_| |  __| | | | | |  __| | | | |_ 
+ |_|  \_\___|___/\___|_|    \_/ \__,_|\__|_|\___/|_| |_|___/ |_|  |_|\__,_|_| |_|\__,_|\__, |\___|_| |_| |_|\___|_| |_|\__|
+                                                                                        __/ |                              
+                                                                                       |___/                               
+    </pre> -->
+
+    <!-- Reservations: List of suitable and available boats container -->
+    <div class="container jumbotron collapse toHide" id="reservationSuitableAvailableBoatsContainer">
+        <h3>Available boats for this reservation</h3>
+        <p class="lead">Based on guest's reservation requirements, these are the available boats:</p>
+        <hr class="my-4">
+        <div class="container">
+            <table id="reservationSuitableAvailableBoatsTable" class="display">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Boat Number</th>
+                        <th>Number of Seats</th>
+                        <th>Boat Type</th>
+                        <th>Base price</th>
+                        <th>Custom price</th>
+                        <!-- <th>Status</th> -->
+                        <th>Action</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <hr class="my-2">
+        <button type="button" class="btn btn-primary" id="reservationSuitableAvailableBoatsContainerCloseBtn" data-toggle="collapse" data-target="#reservationSuitableAvailableBoatsContainer">Close</button>
+    </div>
+
+
+    <!-- List of reservations container -->
+    <div class="container jumbotron collapse toHide" id="listOfReservationsContainer">
+        <h3>List of reservations</h3>
+        <p class="lead">View and edit reservations</p>
+        <hr class="my-4">
+        <div class="container">
+            <table id="reservationsTable" class="display">
+                <thead>
+                    <tr>
+                        <th>Reservation ID</th>
+                        <th>Boat Number</th>
+                        <th>Boat Type</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Duration</th>
+                        <th>Guest Name</th>
+                        <th>Telephone</th>
+                        <th>Cost</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <hr class="my-2">
+        <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#listOfReservationsContainer">Close</button>
+    </div>
+
+
+
+
+
+
+    <!-- Modals -->
+    <!-- <pre>
+███    ███  ██████  ██████   █████  ██      ███████ 
+████  ████ ██    ██ ██   ██ ██   ██ ██      ██      
+██ ████ ██ ██    ██ ██   ██ ███████ ██      ███████ 
+██  ██  ██ ██    ██ ██   ██ ██   ██ ██           ██ 
+██      ██  ██████  ██████  ██   ██ ███████ ███████ 
+</pre> -->
+
+    <div>
+
+
+        <!-- Boat management modals: -->
+        <!-- <pre>
+  ____              _         __  __                                                   _   
+ |  _ \            | |       |  \/  |                                                 | |  
+ | |_) | ___   __ _| |_ ___  | \  / | __ _ _ __   __ _  __ _  ___ _ __ ___   ___ _ __ | |_ 
+ |  _ < / _ \ / _` | __/ __| | |\/| |/ _` | '_ \ / _` |/ _` |/ _ | '_ ` _ \ / _ | '_ \| __|
+ | |_) | (_) | (_| | |_\__ \ | |  | | (_| | | | | (_| | (_| |  __| | | | | |  __| | | | |_ 
+ |____/ \___/ \__,_|\__|___/ |_|  |_|\__,_|_| |_|\__,_|\__, |\___|_| |_| |_|\___|_| |_|\__|
+                                                        __/ |                              
+                                                       |___/                               
+        </pre> -->
+
+        <!-- Manage Boats Modal -->
+        <div class="modal fade" id="manageBoatsModal" tabindex="-1" role="dialog" aria-labelledby="manageBoatsModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manageBoatsModalLongTitle">Manage Boats</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h3>Manage Boats</h3>
+                        <p class="lead">What would you like to do?</p>
+                        <!-- <hr class="my-2"> -->
+
+                        <hr class="my-2">
+                        <!-- <p class="lead">Show list of boats:</p> -->
+                        <div class="container btn-group btn-group-justified">
+                            <button type="button" class="btn btn-success" id="addNewBoatBtn" data-toggle="modal" data-target="#addBoatModal" data-dismiss="modal">Add New Boat</button>
+                            <button type="button" class="btn btn-info" id="MBMODALlistAllBoatsBtn" data-toggle="collapse" data-target="#boatManagerContainer" data-dismiss="modal">List all boats</button>
+                            <button type="button" class="btn btn-primary" id="setPricesBtn" data-toggle="modal" data-target="#setPricesModal" data-dismiss="modal">Set default prices</button>
+                        </div>
+                        <hr class="my-2">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add a boat modal -->
+        <div class="modal fade" id="addBoatModal" tabindex="-1" role="dialog" aria-labelledby="addBoatModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addBoatModalLongTitle">Add New Boat</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <fieldset>
+                            <div class="form-group">
+                                <label for="boatNumberInput">Boat Number</label>
+                                <input type="number" class="form-control" id="boatNumberInput" aria-describedby="boatNumber" placeholder="A number to identify this boat" min="1">
+                            </div>
+                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                <label class="btn btn-primary">
+                                    <input type="radio" name="options" id="rowingBoatBtnSelected" autocomplete="off">Rowing</label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" name="options" id="electricBoatBtnSelected" autocomplete="off">Electric</label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" name="options" id="raftBoatBtnSelected" autocomplete="off">Raft</label>
+                            </div>
+                            <hr class="my-2">
+                            <div class="form-group collapse in" id="chargingMinutesInput">
+                                <label for="chargingMinutes">Charging time (in minutes)</label>
+                                <input type="number" class="form-control" id="chargingMinutes" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="numberOfSeatsInput">Number of seats</label>
+                                <input type="number" class="form-control" id="numberOfSeatsInput" min="0">
+                            </div>
+                            <hr class="my-2">
+                            <div>
+                                <p>Pricing</p>
+                                <div class="form-group">
+                                    <label for="basePriceNewBoatInput">Base Price</label>
+                                    <input type="number" class="form-control" id="basePriceNewBoatInput" min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="customPriceNewBoatInput">Custom Price</label>
+                                    <input type="number" class="form-control" id="customPriceNewBoatInput" min="0">
+                                </div>
+
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="addBoatSaveBtn" data-dismiss="modal">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action button boats modal -->
+        <div class="modal fade" id="actionBoatsModal" tabindex="-1" role="dialog" aria-labelledby="actionBoatsModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="actionBoatsModalLongTitle">Select action</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h3>Change status of the boat</h3>
+                        <p class="lead">What would you like to do?</p>
+                        <hr class="my-2">
+                        <div class="container btn-group btn-group-justified" id="actionButtonsContainer">
+                            <button type="button" class="btn btn-success actionBtnToggler" id="moveToChargingBtn" data-toggle="modal" data-target="#" data-dismiss="modal">Move to Charging</button>
+                            <button type="button" class="btn btn-warning actionBtnToggler" id="moveToMaintenanceBtn" data-toggle="modal" data-target="#" data-dismiss="modal">Move to Maintenance</button>
+                            <button type="button" class="btn btn-warning actionBtnToggler" id="maintenanceCompletedBtn" data-toggle="modal" data-target="#" data-dismiss="modal">Maintenance completed</button>
+                            <!-- <button type="button" class="btn btn-info actionBtnToggler" id="editDetailsActionModalBtn" data-toggle="" data-target="#" data-dismiss="modal">Edit details</button> -->
+                            <!-- <button type="button" class="btn btn-danger actionBtnToggler" id="deleteBoatActionModalBtn" data-toggle="modal" data-target="#" data-dismiss="modal">Delete Boat</button> -->
+                            <button type="button" class="btn btn-danger" id="deleteBoatActionModalBtn" data-toggle="modal" data-target="#" data-dismiss="modal">Delete Boat</button>
+                        </div>
+                        <hr class="my-2">
+                        <div>
+                            <p id="chargingInfo" class="actionBtnInfoToggler">This boat is in charging and cannot be rented. It will be available in the system automatically when the charging is complete. Though, you can reserve this boat.</p>
+                            <p id="maintenanceInfo" class="actionBtnInfoToggler">This boat is under maintenance and cannot be rented. To make it available, please click on the "Maintenance completed" button.</p>
+                            <p id="rentedInfo" class="actionBtnInfoToggler">This boat is already used in a trip. You can end the ongoing trip from the Manage Trips menu.</p>
+                            <p id="reservedInfo" class="actionBtnInfoToggler">This boat is reserved. Please check the Manage Reservation menu for more details.</p>
+                        </div>
+                        <hr class="my-2">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <!-- <button type="button" class="btn btn-primary">Ok</button> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <!-- Trips Management Modals: -->
+        <!-- <pre>
+  _______   _             __  __                                                   _   
+ |__   __| (_)           |  \/  |                                                 | |  
+    | |_ __ _ _ __  ___  | \  / | __ _ _ __   __ _  __ _  ___ _ __ ___   ___ _ __ | |_ 
+    | | '__| | '_ \/ __| | |\/| |/ _` | '_ \ / _` |/ _` |/ _ | '_ ` _ \ / _ | '_ \| __|
+    | | |  | | |_) \__ \ | |  | | (_| | | | | (_| | (_| |  __| | | | | |  __| | | | |_ 
+    |_|_|  |_| .__/|___/ |_|  |_|\__,_|_| |_|\__,_|\__, |\___|_| |_| |_|\___|_| |_|\__|
+             | |                                    __/ |                              
+             |_|                                   |___/                               
+        </pre> -->
+
+        <!-- Manage Trips Modal -->
+        <div class="modal fade" id="manageTripsModal" tabindex="-1" role="dialog" aria-labelledby="manageTripsModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manageTripsModalLongTitle">Manage Trips</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h3>Manage Trips</h3>
+                        <p class="lead">What would you like to do?</p>
+                        <hr class="my-2">
+                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                            <button type="button" class="btn btn-primary">Start New Trip</button>
+                            <div class="btn-group" role="group">
+                                <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                                <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                    <a class="dropdown-item" id="newRowingElectricDropdownItem" href="#" data-toggle="modal" data-target="#startTripModal" data-dismiss="modal">Rowing/Electric boats</a>
+                                    <a class="dropdown-item" id="newRiverRaftDropdownItem" href="#" data-toggle="modal" data-target="#startRaftTripModal" data-dismiss="modal">River Rafts boats</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#listOfOngoingTripsContainer" data-dismiss="modal">Show trips Log</button>
+                        </div>
+
+                        <hr class="my-2">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Start a trip: Inititial information collection modal -->
+        <div class="modal fade" id="startTripModal" tabindex="-1" role="dialog" aria-labelledby="startTripModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="startTripModalLongTitle">Start a new trip</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <fieldset>
+                            <div class="form-group">
+                                <label for="numberOfPersonsInput">For how many persons?</label>
+                                <input type="number" class="form-control" id="numberOfPersonsInput" aria-describedby="boatNumber" placeholder="Add a number" min="0">
+                                <small id="numberOfPersonsInputHelp" class="form-text text-muted">Required to suggest best boat.</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="boatTypeSelect">Boat Type</label>
+                                <small id="boatTypeInputHelp1" class="form-text text-muted">Rafts needs reservation in advance.</small>
+                                <select class="form-control" id="boatTypeSelect">
+                                    <!-- <option>Any</option> -->
+                                    <option>Rowing</option>
+                                    <option>Electric</option>
+                                    <!-- <option>Raft</option> -->
+                                </select>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="showAvailableBoatsBtn" data-dismiss="modal" data-toggle="collapse" data-target="#startTripListOfAvailableBoatsContainer">Available boats</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Start a Raft trip: Inititial information collection modal -->
+        <div class="modal fade" id="startRaftTripModal" tabindex="-1" role="dialog" aria-labelledby="startRaftTripModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="startRaftTripModalTitle">Start a new River Raft trip</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <fieldset>
+                            <div class="form-group">
+                                <label for="tripPeriodSelect">Select trip period:</label>
+                                <select class="form-control" id="tripPeriodSelect">
+                                    <option>Select</option>
+                                    <option>Morning</option>
+                                    <option>Afternoon</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="riverRaftTripPrice">Fixed price for this trip:</label>
+                                <input type="number" class="form-control" id="riverRaftTripPrice" min="0">
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" data-toggle="collapse" data-target="#applicableRaftsReservationsDiv">Close</button>
+                        <!-- <button type="button" class="btn btn-primary" id="showReservedRaftsBtn" data-dismiss="modal" data-toggle="collapse" data-target="#startTripListOfAvailableRaftsContainer">Show Reserved Rafts</button> -->
+                        <button type="button" class="btn btn-primary" id="showReservedRaftsBtn" data-dismiss="modal" data-toggle="collapse" data-target="#startTripListOfAvailableBoatsContainer">Show Reserved Rafts</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Start a trip: Collect guest details modal -->
+        <div class="modal fade" id="startTripGuestDetailsModal" tabindex="-1" role="dialog" aria-labelledby="startTripGuestDetailsModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="startTripGuestDetailsModalLongTitle">Add guest details</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <fieldset>
+                            <div class="form-group">
+                                <label for="guestNameInput">Full Name</label>
+                                <input type="text" class="form-control" id="guestNameInput" aria-describedby="guestName" placeholder="Full name">
+                                <!-- <small id="guestNameInputHelp" class="form-text text-muted">Required to suggest best boat.</small> -->
+                            </div>
+                            <div class="form-group">
+                                <label for="guestIDTypeSelect">ID Type</label>
+                                <!-- <small id="guestIDTypeSelectHelp" class="form-text text-muted">Leave it if no preference.</small> -->
+                                <select class="form-control" id="guestIDTypeSelect">
+                                    <option>Select..</option>
+                                    <option>Passport</option>
+                                    <option>National ID</option>
+                                    <option>Driving license</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="guestIDNmberInput">ID Number</label>
+                                <input type="number" class="form-control" id="guestIDNmberInput" aria-describedby="guestName" placeholder="ID number" min="0">
+                                <!-- <small id="guestNameInputHelp" class="form-text text-muted">Required to suggest best boat.</small> -->
+                            </div>
+                            <div class="form-group">
+                                <label for="guestTelNumberInput">Telephone number</label>
+                                <input type="number" class="form-control" id="guestTelNumberInput" aria-describedby="guestTelNumberInput" placeholder="Use 00 for country code" min="0">
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="startTripBtn" data-dismiss="modal" data-toggle="collapse" data-target=".multi-collapse">Start trip</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Guest Details modal in ongoing trips table  -->
+        <div class="modal fade" id="guestDetailsOngoingTripsModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Trip Number: <span id="tripIDmodalTitle"></span> Guest details</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <hr class="my-1">
+                        <label>Guest Name:      <p id="guestNameSpan"></p></label>
+                        <hr class="my-1">
+                        <label>ID Type:         <p id="iDTypeSpan"></p></label>
+                        <hr class="my-1">
+                        <label>ID Number:       <p id="iDNumberSpan"></p></label>
+                        <hr class="my-1">
+                        <label>Telephone:       <p id="telephoneNumberSpan"></p></label>
+                        <hr class="my-1">
+                    </div>
+                    <div class="modal-footer">
+                        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Back</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <!-- Reservation Management modals: -->
+        <!-- <pre>          
+  _____                               _   _                   __  __                                                   _   
+ |  __ \                             | | (_)                 |  \/  |                                                 | |  
+ | |__) |___ ___  ___ _ ____   ____ _| |_ _  ___  _ __  ___  | \  / | __ _ _ __   __ _  __ _  ___ _ __ ___   ___ _ __ | |_ 
+ |  _  // _ / __|/ _ | '__\ \ / / _` | __| |/ _ \| '_ \/ __| | |\/| |/ _` | '_ \ / _` |/ _` |/ _ | '_ ` _ \ / _ | '_ \| __|
+ | | \ |  __\__ |  __| |   \ V | (_| | |_| | (_) | | | \__ \ | |  | | (_| | | | | (_| | (_| |  __| | | | | |  __| | | | |_ 
+ |_|  \_\___|___/\___|_|    \_/ \__,_|\__|_|\___/|_| |_|___/ |_|  |_|\__,_|_| |_|\__,_|\__, |\___|_| |_| |_|\___|_| |_|\__|
+                                                                                        __/ |                              
+                                                                                       |___/                               
+        </pre> -->
+
+        <!-- Manage reservations modal  -->
+        <div class="modal fade" id="manageReservationsModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Manage Reservations</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h3>What would you like to do?</h3>
+                        <hr class="my-1">
+                        <div class="container btn-group btn-group-justified">
+                            <button class="btn btn-primary btn-sm" id="newReservationModalBtn" data-toggle="collapse" data-target="#addReservationGuestDetailsDiv">New Reservation</button>
+                            <button class="btn btn-info btn-sm" id="listReservationsModalBtn" data-toggle="collapse" data-target="#listOfReservationsContainer" data-dismiss="modal">List Reservations</button>
+                        </div>
+                        <hr class="my-3">
+                        <!-- <div class="container collapse" id="addReservationGuestDetailsDiv"> -->
+                        <div class="container collapse in" id="addReservationGuestDetailsDiv">
+                            <p>Select the type of the boat:</p>
+                            <div class="form-group">
+                                <label class="col-form-label" for="boatTypeReservationInput">Boat type:</label>
+                                <select class="custom-select" id="boatTypeReservationInput">
+                                    <option value="1">Rowing</option>
+                                    <option value="2">Electric</option>
+                                    <option value="3">Raft</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label" for="tripDateReservationInput">Trip planned date:</label>
+                                <input type="date" class="form-control" id="tripDateReservationPickerInput" min="">
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label" for="tripTimeReservationInput">Trip planned time:</label>
+                                <input type="time" class="form-control" id="tripTimeReservationInput" min="">
+                                <small>River raft trips run only at 9:00 or 13:00.</small>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label" for="tripDurationReservationInput">Planned duration, in Hour(s):</label>
+                                <input type="number" class="form-control" id="tripDurationReservationInput" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label" for="numOfPersonsReservationInput">Number of guests:</label>
+                                <input type="number" class="form-control" id="numOfPersonsReservationInput" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label" for="guestNameReservationInput">Guest name:</label>
+                                <input type="text" class="form-control myTimeInput" id="guestNameReservationInput" min="">
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label" for="guestTelNumberReservationInput">Telephone:</label>
+                                <input type="number" class="form-control" id="guestTelNumberReservationInput" min="0">
+                            </div>
+                            <hr class="my-1">
+                        </div>
+
+                        <hr class="my-2">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="nextBtnReservationModal" data-dismiss="modal" data-toggle="collapse" data-target="#reservationSuitableAvailableBoatsContainer">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Reservation confirmation modal  -->
+        <div class="modal fade" id="reservationConfModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Reservation Confirmed</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <hr class="my-1">
+                        <label class="lead">Reservation Number:     <p id="reservationIdSpan"></p></label>
+                        <hr class="my-1">
+                        <label class="lead">Boat Number:            <p id="reservationBoatNumberSpan"></p></label>
+                        <hr class="my-1">
+                        <!-- <small>The actual price may increase depending on the rental duration.</small> -->
+                        <label class="lead">Rental cost (€ / Hour):   <p id="rentalCostSpan"> €</p></label>
+                        <hr class="my-1">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+        <!-- Default Pricing modals -->
+        <!-- <pre>
+  _____      _      _               __  __                                                   _   
+ |  __ \    (_)    (_)             |  \/  |                                                 | |  
+ | |__) _ __ _  ___ _ _ __   __ _  | \  / | __ _ _ __   __ _  __ _  ___ _ __ ___   ___ _ __ | |_ 
+ |  ___| '__| |/ __| | '_ \ / _` | | |\/| |/ _` | '_ \ / _` |/ _` |/ _ | '_ ` _ \ / _ | '_ \| __|
+ | |   | |  | | (__| | | | | (_| | | |  | | (_| | | | | (_| | (_| |  __| | | | | |  __| | | | |_ 
+ |_|   |_|  |_|\___|_|_| |_|\__, | |_|  |_|\__,_|_| |_|\__,_|\__, |\___|_| |_| |_|\___|_| |_|\__|
+                             __/ |                            __/ |                              
+                            |___/                            |___/                               
+        </pre> -->
+
+        <!-- Set prices modal -->
+        <div class="modal fade" id="setPricesModal" tabindex="-1" role="dialog" aria-labelledby="setPricesModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="setPricesModalLongTitle">Set Prices</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                    </div>
+                    <div class="modal-body">
+                        <fieldset>
+                            <p>Select the type of the boat:</p>
+                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                <label class="btn btn-primary">
+                                    <input type="radio" name="options" id="SPMODALrowingBoatsRB" autocomplete="off" data-boatType="ROWING"> Rowing boats
+                                </label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" name="options" id="SPMODALelectricBoatsRB" autocomplete="off" data-boatType="ELECTRIC"> Electric Boats
+                                </label>
+                                <label class="btn btn-primary">
+                                    <!-- <input type="radio" name="options" id="SPMODALriverRaftsRB" autocomplete="off" data-toggle="collapse" data-target="#boatsCustomPricingContainer" data-boatType="RAFT"> River Rafts -->
+                                    <input type="radio" name="options" id="SPMODALriverRaftsRB" autocomplete="off" data-boatType="RAFT"> River Rafts
+                                </label>
+                            </div>
+
+
+                            <!-- Boats Pricing container  -->
+                            <div class="container" id="BoatsPricingContainer">
+                                <hr class="my-2">
+                                <!-- <legend>Rowing boats</legend> -->
+                                <div class="form-group">
+                                    <p>Base Pricing:</p>
+                                    <label class="control-label">Base price per hour</label>
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">€</span>
+                                            </div>
+                                            <input type="number" class="form-control" id="boatsBasePriceInput" aria-label="Amount (to the nearest euro)" min="0">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">.00</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr class="my-2">
+                                <div class="collapse in" id="boatsCustomPricingContainer">
+                                    <p>Custom pricing:</p>
+                                    <div class="form-group">
+                                        <label for="timeInputFrom">From: </label>
+                                        <input type="time" class="form-control" id="boatsPricingTimeInputFrom" aria-describedby="timeFrom" placeholder="From">
+                                        <small id="pricingFromHelp" class="form-text text-muted">Pricing starting from</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="timeInputTo">To: </label>
+                                        <input type="time" class="form-control" id="boatsPricingTimeInputTo" aria-describedby="timeTo" placeholder="To">
+                                        <small id="pricingToHelp" class="form-text text-muted">Pricing ends by</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Custom Price per hour</label>
+                                        <div class="form-group">
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">€</span>
+                                                </div>
+                                                <input type="number" class="form-control" id="boatsCustomPriceInput" aria-label="Amount (to the nearest euro)" min="0">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">.00</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr class="my-2">
+                                <button type="button" class="btn btn-warning" id="boatsPricingFormResetBtn">Reset form</button>
+                                <button type="button" class="btn btn-info" id="SPMODALlistPrices" data-toggle="collapse" data-target="#pricingSchemesContainer" data-dismiss="modal">List Prices Schemes</button>
+                                <button type="button" class="btn btn-primary" id="boatsPricingFormSaveBtn">Save</button>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <!-- Global Modals -->
+
+        <!-- <pre>
+       _____ _       _           _   __  __           _       _     
+      / ____| |     | |         | | |  \/  |         | |     | |    
+     | |  __| | ___ | |__   __ _| | | \  / | ___   __| | __ _| |___ 
+     | | |_ | |/ _ \| '_ \ / _` | | | |\/| |/ _ \ / _` |/ _` | / __|
+     | |__| | | (_) | |_) | (_| | | | |  | | (_) | (_| | (_| | \__ \
+      \_____|_|\___/|_.__/ \__,_|_| |_|  |_|\___/ \__,_|\__,_|_|___/
+    </pre> -->
+
+
+        <!-- Confirmation Modal -->
+
+        <div class="modal fade" id="genericConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="genericConfirmationModalTitle"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                    </div>
+                    <div class="modal-body" id="genericConfirmationModalBody">
+
+                    </div>
+                    <div class="modal-footer" id="genericConfirmationModalFooter">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                        <div id="customModalFooterButtons">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Boat specific stats modal -->
+
+        <div class="modal fade" id="boatSpecificStatsModal" tabindex="-1" role="dialog" aria-labelledby="boatSpecificStatsModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="boatSpecificStatsModalTitle">Boat Specific Stats</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>View boat specific stats:</p>
+                        <div class="form-group">
+                            <label>Select boat number:</label>
+                            <select class="form-control form-control-sm" id="boatStatsSelect">
+                                <!-- <option selected="">Select boat:</option>  -->
+                            </select>
+                        </div>
+                        <fieldset class="boatStatsDiv">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <ul class="small list-group">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                Seats:
+                                                <span class="badge badge-primary badge-pill" id="boatStatsSeats"></span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                Total Durations:
+                                                <span class="badge badge-primary badge-pill" id="boatStatsDurations"></span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col">
+                                        <ul class="small list-group">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                Total income:
+                                                <span class="badge badge-primary badge-pill" id="boatStatsIncome"></span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                Current Status:
+                                                <span class="badge badge-primary badge-pill" id="boatStatsStatus"></span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="closeBoatSpecificStatsModalBtn" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

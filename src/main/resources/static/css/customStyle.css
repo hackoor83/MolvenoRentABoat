@@ -1,0 +1,19 @@
+tbody tr {
+    color: black;
+}
+
+td {
+    text-align: center;
+}
+
+#mainHeaderContainer {
+    padding-top: 2rem;
+    padding-right: 2rem;
+    padding-bottom: 0.5rem;
+    padding-left: 2rem;
+}
+
+#currentStatsAlert {
+    padding-bottom: 0.02rem;
+    padding-top: 0.02rem;
+}
